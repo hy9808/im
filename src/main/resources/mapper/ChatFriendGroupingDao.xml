@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yj.im.project.dao.ChatFriendGroupingDao">
+
+    <resultMap type="com.yj.im.project.entity.ChatFriendGrouping" id="ChatFriendGroupingMap">
+        <result property="friendGroupId" column="friend_group_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="groupName" column="group_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ChatFriendGroupingMap">
+        select
+          friend_group_id, user_id, group_name, create_time, update_time, status
+        from yijia.chat_friend_grouping
+        where friend_group_id = #{friendGroupId}
+    </select>
+
+    <!--根据用户id查询所有分组-->
+    <select id="queryAllById" resultMap="ChatFriendGroupingMap">
+        select
+          friend_group_id, user_id, group_name, create_time, update_time, status
+        from yijia.chat_friend_grouping
+        where
+        user_id = #{userId}
+        and status =1
+    </select>
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ChatFriendGroupingMap">
+        select
+          friend_group_id, user_id, group_name, create_time, update_time, status
+        from yijia.chat_friend_grouping
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ChatFriendGroupingMap">
+        select
+          friend_group_id, user_id, group_name, create_time, update_time, status
+        from yijia.chat_friend_grouping
+        <where>
+            <if test="friendGroupId != null">
+                and friend_group_id = #{friendGroupId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="groupName != null and groupName != ''">
+                and group_name = #{groupName}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="friendGroupId" useGeneratedKeys="true">
+        insert into yijia.chat_friend_grouping(user_id, group_name, create_time, update_time, status)
+        values (#{userId}, #{groupName}, #{createTime}, #{updateTime}, #{status})
+    </insert>
+
+    <!--新增用户分组-->
+    <insert id="addGroup" keyProperty="friendGroupId" useGeneratedKeys="true">
+         insert into yijia.chat_friend_grouping(user_id, group_name, create_time, update_time, status)
+         values (#{userId}, #{groupName}, #{createTime}, #{updateTime}, #{status})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update yijia.chat_friend_grouping
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="groupName != null and groupName != ''">
+                group_name = #{groupName},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where friend_group_id = #{friendGroupId}
+    </update>
+    <!--修改分组名-->
+    <update id="updateGroupName">
+        update yijia.chat_friend_grouping
+        set group_name = #{groupName},update_time = #{updateTime}
+        where friend_group_id = #{friendGroupId} and status =1
+    </update>
+    <!--删除用户分组-->
+    <update id="deleteGroup">
+        update yijia.chat_friend_grouping
+        set status =2,update_time = #{updateTime}
+        where friend_group_id = #{friendGroupId}
+    </update>
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from yijia.chat_friend_grouping where friend_group_id = #{friendGroupId}
+    </delete>
+
+</mapper>

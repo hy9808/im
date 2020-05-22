@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yj.im.project.dao.ChatSysReadDao">
+
+    <resultMap type="com.yj.im.project.entity.ChatSysRead" id="ChatSysReadMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="readCount" column="read_count" jdbcType="INTEGER"/>
+        <result property="readType" column="read_type" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <select id="queryByIdGroupReadType" resultMap="ChatSysReadMap" parameterType="java.lang.Long">
+     SELECT
+        id,
+	    read_count,
+	    read_type
+    FROM
+	    chat_sys_read
+    WHERE
+    	user_id = #{userId}
+    GROUP BY
+	    read_type
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ChatSysReadMap">
+        select
+          id, user_id, read_count, read_type
+        from yijia.chat_sys_read
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ChatSysReadMap">
+        select
+          id, user_id, read_count, read_type
+        from yijia.chat_sys_read
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ChatSysReadMap">
+        select
+        id, user_id, read_count, read_type
+        from yijia.chat_sys_read
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="readCount != null">
+                and read_count = #{readCount}
+            </if>
+            <if test="readType != null">
+                and read_type = #{readType}
+            </if>
+        </where>
+    </select>
+    <select id="selectByUserIdCount" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(0) from chat_sys_read where user_id = #{userId}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into yijia.chat_sys_read(user_id, read_count, read_type)
+        values (#{userId}, #{readCount}, #{readType})
+    </insert>
+
+
+    <update id="updateSysMsgType">
+     update yijia.chat_sys_read set read_count = read_count + #{readCount} where id = #{id}
+    </update>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update yijia.chat_sys_read
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="readCount != null">
+                read_count = #{readCount},
+            </if>
+            <if test="readType != null">
+                read_type = #{readType},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateByTypeAndIdToReadCount" parameterType="com.yj.im.project.entity.ChatSysRead">
+
+        UPDATE
+            chat_sys_read
+        SET
+            read_count =#{readCount}
+        WHERE
+        user_id = #{userId}
+        AND read_type = #{readType}
+
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from yijia.chat_sys_read where id = #{id}
+    </delete>
+
+</mapper>

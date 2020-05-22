@@ -1,0 +1,96 @@
+* {
+    margin: 0rem;
+    padding: 0rem;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+}
+
+
+.fontSize2rem{
+    font-size: 2rem;
+}
+
+.fontSize1_6rem{
+    font-size: 1.6rem;
+}
+
+.fontSize1_3rem{
+    font-size: 1.3rem;
+}
+
+.fontStrong{
+    font-weight: bold;
+}
+
+.fontFamilyYAHEI{
+    font-family: "Microsoft YaHei UI Light";
+}
+
+.first-line{
+    background-color: white;
+    height: 40%;
+    width: 100%;
+    margin: 0rem;
+    padding-top: 2.5rem;
+
+}
+
+.first-line-return{
+    padding-left: 1.5rem;
+}
+.first-line-send{
+    padding-left: 10rem;
+}
+
+.second-line{
+    margin-top: 3rem;
+    padding-left: 9.8rem;
+}
+
+.third-line{
+    margin-top: 2rem;
+    margin-left: 10%;
+}
+
+.fourth-line {
+    margin-top: 1rem;
+    background-color: rgb(248, 248, 248);
+    width: 80%;
+    height: 10rem;
+    margin-left: 10%;
+    border-radius: 1rem;
+}
+.textCl{
+    margin-top: 1rem;
+    margin-left: 1.6rem;
+    width: 87%;
+    height: 7.8rem;
+    background-color: rgb(248,248,248);
+    border: 0rem;
+}
+
+.fifth-line{
+    margin-top: 2.2rem;
+    margin-left: 10%;
+}
+
+.sixth-line{
+    margin-top: 1rem;
+    margin-left: 10%;
+    background-color: rgb(248,248,248);
+    height: 5rem;
+    width: 80%;
+    border-radius: 1rem;
+}
+
+.inputCl{
+    margin-left: 1.6rem;
+    margin-top: 0.7rem;
+    width: 87%;
+    height: 3rem;
+    border: 0rem;
+    background-color: rgb(248,248,248);
+}

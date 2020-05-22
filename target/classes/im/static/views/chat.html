@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>聊天案例</title>
+    <link rel="stylesheet" type="text/css" href="../assets/layUi/css/layui.css">
+    <script src="../assets/js/jquery-1.7.2.js"></script>
+    <script src="../assets/js-v/config.js"></script>
+    <script src="../assets/layui/layui.all.js"></script>
+    <script src="../assets/js-v/config.js"></script>
+
+</head>
+<body>
+<input type="text" id="user">
+<input type="button" value="建立连接" onclick="getWebsocket()">
+
+<br>
+
+<input type="text" id="recipientId" placeholder="接收者">
+<br>
+<input type="text" id="message"><br>
+<input type="text" id="goType" placeholder="发送类型(0.普通用户 1.群聊)">
+<input type="button" value="发送消息" onclick="sendMsg()">
+<input type="button" value="确认消息" id="msgReady">
+接收到消息:
+<p id="server_message" style="background-color: #AAAAAA"></p>
+
+
+<script>
+
+
+    var websocket = null;
+    var lockReconnect = false;
+    var userId = null;
+
+    function getWebsocket() {
+        // $.ajax({
+        //     url: httpurl + "/api/queryAllById",
+        //     dataType: "json",
+        //     beforeSend:
+        //         function (request) {
+        //             request.setRequestHeader("Authorization", "Bearer eyJhbGciOiJSUzI1NiJ9.eyJ1c2VyIjoie1wiYWNjb3VudE5vbkV4cGlyZWRcIjp0cnVlLFwiYWNjb3VudE5vbkxvY2tlZFwiOnRydWUsXCJjcmVhdGVUaW1lXCI6MTU4NjEzMzAxNzAwMCxcImNyZWRlbnRpYWxzTm9uRXhwaXJlZFwiOnRydWUsXCJlbmFibGVkXCI6dHJ1ZSxcImlkXCI6MyxcImxpbmtzXCI6W3tcImlkXCI6MyxcImxpbmtVcmxcIjpcIi9wcm9kdWN0L2ZpbmRBbGxcIixcIm1ldGhvZFwiOjB9LHtcImlkXCI6MixcImxpbmtVcmxcIjpcIi90ZXN0XCIsXCJtZXRob2RcIjowfSx7XCJpZFwiOjQsXCJsaW5rVXJsXCI6XCIvd2FsbGV0L3VzZXJXYWxsZXRJbmZvXCIsXCJtZXRob2RcIjowfSx7XCJpZFwiOjUsXCJsaW5rVXJsXCI6XCIvd2FsbGV0L3dhbGxldFRvcFVwXCIsXCJtZXRob2RcIjowfSx7XCJpZFwiOjYsXCJsaW5rVXJsXCI6XCIvZGV2L2VzdGF0ZS9saXN0XCIsXCJtZXRob2RcIjowfSx7XCJpZFwiOjcsXCJsaW5rVXJsXCI6XCIvZGlzL2Rpc1VzZXJJbmZvXCIsXCJtZXRob2RcIjowfV0sXCJwYXNzd29yZFwiOlwiJDJhJDEwJGZZZHdhWjdka2plMmd5Q0RFUXoxdmVPOFF1Snk0NDFGZkpMUmFWVTZlb2MweGYvYmt3YUpHXCIsXCJ1c2VybmFtZVwiOlwienNcIn0iLCJqdGkiOiJNMlF3WTJFME1UTXRaalZoWlMwME5qTTVMV0V4T0RrdE56VmxPR1V6TTJFM1lqWmkiLCJleHAiOjE1ODcwMDUyODh9.Jkx03mYRZ0P6OaT0rV6ICDWtQ80BIxmd4IIktXOn55ZLEYlufCijIU8p1tzaBCEsdY66WZPrAcoxQZ7iw0U44EnXnsGIQyfhNG09Ow2akvtoM1TwHyjVggHjrL7-4u2rj9KQyQNPhKaTnZHu7GFIypN74hjZa1_7mYuM5BgRvz1wYdzx11jKma1WR9CKEM6K4Gfn3jaKwy2ry-M_TyLMeCN4Gh3NUMB6q3wJjaQ-Zp7aMFkZ4K4Fo4_D8Rg6vMBwgiaY1rffJU-PmTwMnqaowNhYSo_o6LTYQ4mDseOZ6VPPo0PT3VIEw-Vs_KOZau7UFeAmQ46lE6-1b0iHNHOtIA");
+        //         },
+        //     type: "post",
+        //     data: {userId: $("#user").val(), recipientId: $("#recipientId").val()},
+        //     success: function (results) {
+        //         var server_message = document.getElementById("server_message");
+        //         var data = results.result;
+        //         console.log(data);
+        //         for (let i = 0; i < data.length; i++) {
+        //             switch (data[i].msgType) {
+        //                 case 0:
+        //                     server_message.innerHTML += "用户" + data[i].userId + "给" + data[i].recipientId + "说：" + data[i].message + "<br/>";
+        //                     break;
+        //                 case 1:
+        //                     server_message.innerHTML += "<img src='" + data[i].message + "'><br>"
+        //
+        //                     break;
+        //                 case 2:
+        //                     break;
+        //             }
+        //         }
+
+        //判断当前浏览器是否支持 webSocket
+        if ($("#user").val() == null) {
+            return;
+        }
+        if (window.WebSocket) {
+            websocket = new WebSocket("ws://127.0.0.1:8089/ws");
+            websocket.onopen = function (ev) {
+
+                // window.setInterval(function () {
+                //     layer.msg("冲啊数据", {icon: 6});
+                //     websocket.send(JSON.stringify(getMessage(1, 0, $("#user").val(), $("#recipientId").val(), "let's go data！！！！", null, null)))
+                // }, 100)
+                console.log("建立连接");
+                lockReconnect = true;
+                websocket.send(JSON.stringify(getMessage(0, 0, null, $("#user").val(), null, null, null, $("#user").val() == 0 ? tokenValue3 : tokenValue2)))
+                websocket.send(JSON.stringify(getMessage(2, null, 0, 2, null, null, null, null)))
+                window.setInterval(open(), 1000);
+            }
+            websocket.onclose = function (ev) {
+                console.log("断开连接");
+            }
+            websocket.onmessage = function (ev) {
+                var server_message = document.getElementById("server_message");
+                var resultMsg = JSON.parse(ev.data);
+                console.log(resultMsg);
+                switch (resultMsg.type) {
+                    case 0:
+                        console.log(resultMsg.chatRecord.userId);
+                        userId = resultMsg.chatRecord.userId;
+                        break;
+
+                    case 1:
+                        //正常消息
+
+                        if (resultMsg.chatRecord.sysMsgType != null) {
+                            server_message.innerHTML += "系统消息：" + resultMsg.chatRecord.message + "<br/>";
+                        }
+                        //媒体资源 具体用msgType细分图片和视频
+                        if (resultMsg.chatRecord.msgType == 1) {
+                            server_message.innerHTML += "<img src='" + resultMsg.chatRecord.message + "'>"
+                        } else if (resultMsg.chatRecord.msgType == 0) {
+                            //文字
+                            server_message.innerHTML += "用户" + resultMsg.chatRecord.userId + "给" + resultMsg.chatRecord.recipientId + "说：" + resultMsg.chatRecord.message + "<br/>";
+                        } else {
+                            //视频
+                        }
+
+                        break;
+                    case 2:
+
+                        break;
+                    case 3:
+                        //心跳包
+                        console.log("心跳检测回复啦");
+                        setTimeout(open, 8500);
+                        break;
+                    case 4:
+                        //媒体资源 具体用msgType细分图片和视频
+                        if (resultMsg.chatRecord.msgType == 1) {
+                            server_message.innerHTML += "<img src='" + resultMsg.chatRecord.message + "'>"
+                        } else if (resultMsg.chatRecord.msgType == 0) {
+                            //文字
+                            server_message.innerHTML += "群组中的:" + resultMsg.chatRecord.recipientId + "号群的" + resultMsg.chatRecord.userId + "说：" + resultMsg.chatRecord.message + "<br/>";
+                        } else {
+                            //视频
+
+                        }
+
+                        break
+                }
+            }
+
+
+        } else {
+            alert("当前浏览器不支持 webSocket")
+        }
+        // }
+        // })
+
+
+    }
+
+    $("#msgReady").on("click", function () {
+        websocket.send(JSON.stringify(getMessage(5, 0, null, $("#user").val(), $("#recipientId").val(), $("#message").val(), null, null)))
+    });
+
+
+    /**
+     * 获取发送出去的消息体
+     * @param {Object} type 消息类型     0.连接  1.发送消息  2.接收消息  3.客户端保持心跳 4.群消息
+     * @param {Object} msgType 消息类型  0.文字 1.图片,3.视频,
+     * @param {Object} userId 发送的id
+     * @param {Object} recipientId 接收者id
+     * @param {Object} msg 消息
+     * @param {Object} msgId 消息id 传null
+     * @param {Object} ext 扩展字段 传null
+     */
+    function getMessage(type, msgType, sysMsgType, userId, recipientId, msg, msgId, ext) {
+        return {
+            type: type,
+            chatRecord: {
+                id: msgId,
+                userId: userId,
+                msgType: msgType,
+                recipientId: recipientId,
+                sysMsgType: sysMsgType,
+                message: msg,
+            },
+            ext: ext
+        };
+    }
+
+
+    function sendMsg() {
+        var message = document.getElementById("message");
+        if ($("#goType").val() == 1 || $("#goType").val() == "1") {
+            websocket.send(JSON.stringify(getMessage(4, 0, null, $("#user").val(), $("#recipientId").val(), $("#message").val(), null, null)))
+        } else {
+            websocket.send(JSON.stringify(getMessage(1, 0, null, userId, $("#recipientId").val(), $("#message").val(), null, null)))
+        }
+        server_message.innerHTML += "你给用户" + $("#recipientId").val() + "说：" + $("#message").val() + "<br/>";
+
+    }
+
+
+    // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function () {
+        websocket.close();
+    }
+
+    function open() {
+        var str = $("#user").val() + "心跳了❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥❥";
+        websocket.send(JSON.stringify(getMessage(3, null, 0, $("#user").val(), null, str, null, null)));
+        console.log("我是心跳包我要开始干活了！！！")
+    }
+
+</script>
+</body>
+</html>

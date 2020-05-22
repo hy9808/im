@@ -1,0 +1,46 @@
+
+        <div class="msg-sys" style="margin-top: 3%" >
+            <div class="layui-row" style="background: rgba(255, 255, 255, 1);">
+                <div class="layui-col-xs12" style="height: 1.7rem;margin-top: 0.5rem">
+                    <img style="margin-left: 2%" src="../../assets/img/message/has-message/zuixinxiaoxi.png" width="25px"
+                         alt=""/>
+                    <div style="display:inline;" class="top-msg-name">聊天消息</div>
+                </div>
+            </div>
+
+
+            <div class="layui-row">
+                    {{# layui.each(d,function(index, item){ }}
+                <div class="layui-col-xs12">
+                    <div id="{{item.userId==null?MESSAGE_GROUP_ID+item.groupId:MESSAGE_FRIEND_ID+item.userId}}" class="message" onclick="clickMsg('{{item.id || ''}}', {{item.subMsgType}}, this,{{item.userId}})" >
+                        <div class="layui-row">
+                            <div class="layui-col-xs12 layui-col-md2" style="margin-left: 2%">
+                                <div class="grid-demo grid-demo-bg1">
+                                    <img class="head_img" src=" {{item.img || ''}} " width="10%" alt=""/>
+                                    {{# if(item.msgNotReadyCount>0){}}
+                                       <span class="layui-badge"> {{item.msgNotReadyCount || ''}}</span>
+                                    {{# }else{}}
+                                        <span class="layui-badge" style="position: absolute;margin-top: -1000%;"> {{item.msgNotReadyCount || ''}}</span>
+                                    {{# };}}
+                                </div>
+                            </div>
+                            <div class="layui-col-xs6 layui-col-md10">
+                                <div class="grid-demo grid-demo-bg2">{{item.nickName || ''}}</div>
+                            </div>
+                            <div class="layui-col-xs6 layui-col-md12">
+                                <div class="grid-demo grid-demo-bg2">
+                                {{# if(item.msgNotReadyCount>0){}}
+                                 <span class="sub-message">[{{item.msgNotReadyCount || ''}}条:]</span>
+                                {{# }else{}}
+                                     <span class="sub-message"  style="position: absolute;margin-top: -1000%;" >[0条:]</span>
+                                {{# };}}
+                                <span class="sub-message">{{item.outMsg || ''}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <span class="time_span">{{layui.util.toDateString(item.outTime, 'MM-dd HH:mm')}}</span>
+                </div>
+                        {{#  }); }}
+            </div>
+        </div>

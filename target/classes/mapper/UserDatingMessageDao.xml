@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yj.im.project.dao.UserDatingMessageDao">
+
+    <resultMap type="com.yj.im.project.entity.UserDatingMessage" id="UserDatingMessageMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="nikeName" column="nike_name" jdbcType="VARCHAR"/>
+        <result property="birthday" column="birthday" jdbcType="TIMESTAMP"/>
+        <result property="livingCity" column="living_city" jdbcType="VARCHAR"/>
+        <result property="workNature" column="work_nature" jdbcType="VARCHAR"/>
+        <result property="wordIncome" column="word_income" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="marriageStatus" column="marriage_status" jdbcType="INTEGER"/>
+        <result property="height" column="height" jdbcType="INTEGER"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="weight" column="weight" jdbcType="INTEGER"/>
+        <result property="hobby" column="hobby" jdbcType="VARCHAR"/>
+        <result property="specialty" column="specialty" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="wechat" column="wechat" jdbcType="VARCHAR"/>
+        <result property="customSign" column="custom_sign" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserDatingMessageMap">
+        select
+          id, user_id, nike_name, birthday, living_city, work_nature, word_income, sex, marriage_status, height, age, weight, hobby, specialty, phone, wechat, custom_sign, status, create_time, update_time
+        from yijia.user_dating_message
+        where id = #{id}
+    </select>
+
+    <!--通过用户id查询单个-->
+    <select id="queryByUserId" resultType="com.yj.im.project.entity.pojo.ChatFriendVO">
+        SELECT
+            syu.id userId,
+            syu.name nickName,
+            usm.sex sex,
+            usm.living_city livingCity,
+            usm.custom_sign customSign,
+            syu.account account,
+            syu.image image,
+            syu.phone phone
+
+        FROM
+        user_dating_message usm
+        LEFT JOIN sys_user syu ON usm.user_id = syu.id
+        WHERE
+        syu.id = #{userId}
+        AND syu.status = 1
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserDatingMessageMap">
+        select
+          id, user_id, nike_name, birthday, living_city, work_nature, word_income, sex, marriage_status, height, age, weight, hobby, specialty, phone, wechat, custom_sign, status, create_time, update_time
+        from yijia.user_dating_message
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserDatingMessageMap">
+        select
+          id, user_id, nike_name, birthday, living_city, work_nature, word_income, sex, marriage_status, height, age, weight, hobby, specialty, phone, wechat, custom_sign, status, create_time, update_time
+        from yijia.user_dating_message
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="nikeName != null and nikeName != ''">
+                and nike_name = #{nikeName}
+            </if>
+            <if test="birthday != null">
+                and birthday = #{birthday}
+            </if>
+            <if test="livingCity != null and livingCity != ''">
+                and living_city = #{livingCity}
+            </if>
+            <if test="workNature != null and workNature != ''">
+                and work_nature = #{workNature}
+            </if>
+            <if test="wordIncome != null and wordIncome != ''">
+                and word_income = #{wordIncome}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="marriageStatus != null">
+                and marriage_status = #{marriageStatus}
+            </if>
+            <if test="height != null">
+                and height = #{height}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="weight != null">
+                and weight = #{weight}
+            </if>
+            <if test="hobby != null and hobby != ''">
+                and hobby = #{hobby}
+            </if>
+            <if test="specialty != null and specialty != ''">
+                and specialty = #{specialty}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="wechat != null and wechat != ''">
+                and wechat = #{wechat}
+            </if>
+            <if test="customSign != null and customSign != ''">
+                and custom_sign = #{customSign}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into yijia.user_dating_message(user_id, nike_name, birthday, living_city, work_nature, word_income, sex, marriage_status, height, age, weight, hobby, specialty, phone, wechat, custom_sign, status, create_time, update_time)
+        values (#{userId}, #{nikeName}, #{birthday}, #{livingCity}, #{workNature}, #{wordIncome}, #{sex}, #{marriageStatus}, #{height}, #{age}, #{weight}, #{hobby}, #{specialty}, #{phone}, #{wechat}, #{customSign}, #{status}, #{createTime}, #{updateTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update yijia.user_dating_message
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="nikeName != null and nikeName != ''">
+                nike_name = #{nikeName},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="livingCity != null and livingCity != ''">
+                living_city = #{livingCity},
+            </if>
+            <if test="workNature != null and workNature != ''">
+                work_nature = #{workNature},
+            </if>
+            <if test="wordIncome != null and wordIncome != ''">
+                word_income = #{wordIncome},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="marriageStatus != null">
+                marriage_status = #{marriageStatus},
+            </if>
+            <if test="height != null">
+                height = #{height},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="weight != null">
+                weight = #{weight},
+            </if>
+            <if test="hobby != null and hobby != ''">
+                hobby = #{hobby},
+            </if>
+            <if test="specialty != null and specialty != ''">
+                specialty = #{specialty},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="wechat != null and wechat != ''">
+                wechat = #{wechat},
+            </if>
+            <if test="customSign != null and customSign != ''">
+                custom_sign = #{customSign},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from yijia.user_dating_message where id = #{id}
+    </delete>
+
+</mapper>

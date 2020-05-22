@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="referrer" content="no-referrer"/>
+		<meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<title>添加好友分组</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<script type="text/javascript" src="../../assets/js/jquery-3.1.1.min.js"></script>
+
+		<script type="text/javascript" src="../../assets/layui/layui.all.js"></script>
+		<script type="text/javascript" src="../../assets/js-v/config.js"></script>
+		<script src="../../assets/js-vue/vue.js"></script>
+		<script src='../../assets/js/friend/appSort.js'></script>
+		<link href="../../assets/css/friend/base.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="../../assets/css/friend/stylesheet.css">
+		<link rel="stylesheet" href="../../assets/layui/css/layui.css" />
+	</head>
+	<style>
+		.box {
+			border: 1px solid black;
+			display: none;
+			position: absolute;
+			right: 15%;
+			top: 20%;
+			height: 160px;
+			width: 70%;
+			background: white;
+			position: fixed;
+			/* 默认对话框隐藏 */
+		}
+		.abox{
+			display: none;
+			position: absolute;
+			top: 0%;
+			height: 5rem;
+			width: 100%;
+			background: white;
+			position: fixed;
+		}
+		
+		input {
+			border-radius: 8px;
+		}
+		/*.box.show {
+			display: block;
+		}
+		
+		.box .x {
+			font-size: 18px;
+			text-align: right;
+			display: block;
+		}
+		
+		.box input {
+			width: 80%;
+			font-size: 18px;
+			margin-top: 18px;
+		}*/
+	</style>
+
+	<body style="background-color: #F8F8F8;">
+		<!--标头-->
+		<div class="layui-row layui-bg-blue" style="height: auto;line-height: 4rem;">
+			<div class="layui-col-xs10">
+				<div class="grid-demo grid-demo-bg1" style="padding-left: 45%; font-size: 2rem; font-family: '黑体';">分组管理</div>
+			</div>
+			<div class="layui-col-xs2">
+				<div class="grid-demo" style="font-family: '黑体';padding-left: 45%;font-size: 1.3rem;" id="back">完成</div>
+			</div>
+		</div>
+		<!--添加分组-->
+		<div class="layui-row layui-bg-white" id="add" style="height: auto;line-height: 4rem;">
+			<div class="layui-col-xs1">
+				<div class="grid-demo grid-demo-bg1"><i class="layui-icon" style="font-size: 3.3rem;padding-left: 39%;">&#xe608;</i></div>
+			</div>
+			<div class="layui-col-xs11">
+				<div class="grid-demo" style="font-family: '黑体';padding-left: 8%;font-size: 2.1rem;">添加分组</div>
+			</div>
+		</div>
+		<hr class="layui-bg-gray" />
+		<!--遍历群组信息-->
+		<div id="app">
+			<div class="layui-row layui-bg-white" v-for="list in lists" style="height: auto;line-height: 4rem;">
+				<div :id="list.friendGroupId+list.groupName">
+					<div class="layui-col-xs9">
+						<div class="grid-demo" :id="list.friendGroupId" @click="link(list.friendGroupId,list.groupName)" style="font-family: '黑体';padding-left: 5%;font-size: 2rem;">{{ list.groupName }}</div>
+					</div>
+					<div class="layui-col-xs2">
+						<div class="grid-demo"><i class="layui-icon" @click="del(list.friendGroupId,list.groupName)" style="font-size: 2.5rem;margin-left: 85%;">&#x1007;</i></div>
+					</div>
+
+					<hr class="layui-bg-gray" />
+				</div>
+			</div>
+		</div>
+		<!--弹出框-->
+		<!--编辑分组-->
+		<div id="inputbox" class="box">
+			<div class="layui-row" style="margin-top: 2%;font-size: 25px;">
+				<center>编辑分组</center>
+			</div>
+			<div class="layui-row">
+				<center style="font-size: 20px;">请输入新的分组名称</center>
+			</div>
+			<div class="layui-row"><input id="groupName" type="text" style="width: 80%; height:28px;margin-left:10%;margin-top: 10px; border: 1px solid black; font-size: 2rem;"></div>
+			<div class="layui-row">
+				<div class="layui-col-xs6"><input style="border:1px thick black;  width: 100%; background-color: white; font-size:25px;font-family: '黑体'; margin-top: 10px;" type="button" id="close" value="取消"></div>
+				<div class="layui-col-xs6"><input style="border: 1px thick black;width: 100%; background-color: white;font-size:25px; font-family: '黑体';margin-top: 10px;" type="button" id="dm" value="确定"></div>
+			</div>
+			<input type="hidden" id="friendGroupId" value="" />
+		</div>
+		<!--新建分组-->
+		<div id="inputbox1" class="box">
+			<div class="layui-row" style="margin-top: 10%;font-size: 25px;">
+				<center>添加分组</center>
+			</div>
+			<div class="layui-row">
+				<center style="font-size: 20px;">请输入新的分组名称</center>
+			</div>
+			<div class="layui-row"><input id="groupName1" type="text" style="width: 60%;margin-left: 20%; border: 1px solid black;font-size: 2rem;"></div>
+			<div class="layui-row">
+				<div class="layui-col-xs6"><input style="border:1px thick black;  width: 100%; background-color: white;font-size:25px;font-family: '黑体';" type="button" id="close1" value="取消"></div>
+				<div class="layui-col-xs6"><input style="border: 1px thick black;width: 100%; background-color: white;font-size:25px;font-family: '黑体';" type="button" id="dm1" value="确定"></div>
+			</div>
+		</div>
+		<!--提示用户输入过长-->
+		<div id="message" class="abox">
+			<div class="layui-row" style="font-size: 25px;background-color: white;">
+				<center style="font-family: '黑体'; font-size:2rem; margin-top: 5%;">输入的分组名超过最大长度。</center>
+			</div>
+		</div>
+
+	</body>
+	<script>
+		/*返回原页面*/
+		$('#back').on("click", function() {
+			window.location.href ="friendGroup.html";
+		})
+		/*添加群名*/
+		$('#add').on("click", function() {
+			$('#inputbox1').attr("style", "display:block;");
+			$('#groupName1').val("");
+		})
+		$('#close1').on("click", function() {
+			$('#inputbox1').attr("style", "display:none;");
+		})
+		$('#dm1').on("click", function() {
+			var groupName = $('#groupName1').val();
+			/*判断群名是否超过指定长度*/
+			if(groupName.length>10){
+				$('#message').attr("style","display:block;");
+				setTimeout(function(){
+					$('#message').attr("style","display:none;");
+				},1000);
+			}else{
+				if(groupName.length>0){
+					/*发送创建新群*/
+				$.ajax({
+					url: httpurl + "/api/addGroup",
+					type: "post",
+					dataType: "json",
+					data: {
+						groupName: groupName,
+					},
+					beforeSend: function(request) {
+						request.setRequestHeader(tokenKey, tokenValue)
+					},
+					success: function(result) {
+						/*成功后返回分组*/
+						$('#inputbox1').attr("style", "display:none;");
+						search();
+
+					}
+				})
+				}
+				
+			}
+
+		})
+		/*修改群名*/
+		$('#close').on("click", function() {
+			$('#inputbox').attr("style", "display:none;");
+		})
+		$('#dm').on("click", function() {
+			var groupName = $('#inputbox #groupName').val();
+			/*判断群名是否超过指定长度*/
+			if(groupName.length>10){
+				$('#message').attr("style","display:block;");
+				setTimeout(function(){
+					$('#message').attr("style","display:none;");
+				},1000);
+			}else{
+				if(groupName.length>0){
+						var friendGroupId = $('#friendGroupId').val();
+			/*发送请求修改群名*/
+			$.ajax({
+				url: httpurl + "/api/updateGroupName",
+				type: "post",
+				dataType: "json",
+				data: {
+					friendGroupId: friendGroupId,
+					groupName: groupName,
+				},
+				beforeSend: function(request) {
+					request.setRequestHeader(tokenKey, tokenValue)
+				},
+				success: function(result) {
+					$('#inputbox').attr("style", "display:none;");
+					$("#" + friendGroupId).text(groupName);
+					search();
+				}
+			})
+				}
+			
+			}
+			
+
+		})
+
+		var app = new Vue({
+			el: '#app',
+			data: {
+				lists: {}
+			},
+			methods: {
+				link(friendGroupId, groupName) {
+
+					$("#inputbox").attr("style", "display:block;");
+
+					$('#groupName').val(groupName);
+
+					$('#friendGroupId').val(friendGroupId);
+				},
+				del(friendGroupId,groupName) {
+					/*执行删除操作*/
+					$.ajax({
+						url: httpurl + "/api/deleteGroup",
+						type: "post",
+						dataType: "json",
+						beforeSend: function(request) {
+							request.setRequestHeader(tokenKey, tokenValue)
+						},
+						data: {
+							friendGroupId: friendGroupId,
+						},
+						success: function(result) {
+							//移除元素
+							var id = friendGroupId + groupName;
+							console.log(id);
+							$('#' + id).remove();
+						}
+					})
+				},
+
+			},
+		})
+		function search() {
+			$.ajax({
+				url: httpurl + "/api/searchGroup",
+				type: "post",
+				dataType: "json",
+				beforeSend: function(request) {
+					request.setRequestHeader(tokenKey, tokenValue)
+				},
+				success: function(result) {
+					app.lists = result.result;
+				}
+			})
+		}
+		window.onload= function () {
+			search();
+		}
+	</script>
+</html>

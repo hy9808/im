@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>测试页面</title>
+<body>
+<input id="i" type="text">
+<button id="go">确定</button>
+
+</body>
+<script src="../assets/js/jquery-1.7.2.js"></script>
+<script>
+    $("#go").on("click", function () {
+        let token = $("#i").val();
+        if (token.length > 10) {
+            console.log('成功');
+            localStorage.setItem("token", token);
+            window.location.href = "../views/friend/friend.html"
+        }
+    });
+
+</script>
+</html>

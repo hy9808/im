@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="no-referrer"/>
+    <title>Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/x-icon" href="#"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="../../assets/js/jquery-3.1.1.min.js"></script>
+    <script src="../../assets/js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../../assets/js-v/config.js"></script>
+    <script src="../../assets/js-vue/vue.js"></script>
+    <script src="../../assets/js-vue/vue-router.js"></script>
+    <script type="text/javascript" src="../../assets/layui/layui.all.js"></script>
+
+    <!--  自定义的css  -->
+    <link rel="stylesheet" href="../../assets/css/group/groupchat.css">
+    <!--    layui核心css-->
+    <link rel="stylesheet" href="../../assets/layui/css/layui.css">
+    <link rel="stylesheet" href="../../assets/layui/css/layui.mobile.css">
+    <link rel="stylesheet" href="../../assets/layui/css/modules/laydate/default/laydate.css">
+
+</head>
+<body>
+<div>
+    <div class="header_one layui-row">
+        <div class="header-first-line layui-row jz">
+            <i class="layui-col-xs4 qun-fanhui layui-icon" style="font-size: 2rem;" href="javascript:;" onclick="javascript:history.go(-1);">
+                &#xe603;
+            </i>
+            <div class="layui-col-xs4 qun-title">
+                <span class="fontSize1_6rem fontFamilyYAHEI colorWhite fontStrong">添加朋友</span>
+            </div>
+        </div>
+    </div>
+    <div class="bodu_middle">
+        <div class="middle_sousuo layui-row bgc_white" style="position:relative">
+            <i class="sousuo_icon layui-icon bgc_white" style="font-size: 2.5rem">
+                &#xe615;
+            </i>
+            <input id="phone-text" class="sousuo bgc_white" placeholder="亿家号/手机号" style="font-size: 1.7rem"/>
+            <i id="comfirmphone" class="sou-ok layui-icon open_phone_menu" style="font-size: 2.5rem;margin-top:3px">
+                &#xe602;
+            </i>
+        </div>
+
+        <div class="middle_contact_person layui-row">
+<!--            <i class="layui-icon" style="font-size: 2.5rem">&#xe770;</i>-->
+            <div class="phone_contact">
+                <img src="../../assets/img/phonecontact/添加好友_看图王.png" alt=""/>
+            </div>
+            <div class="middle_contact_first fontFamilyYAHEI fontSize1_3rem">
+                <div class="contact_first_line">
+                    手机通讯录
+                </div>
+                <div class="contact_second_line fontFamilyYAHEI fontSize0_8rem">
+                    添加或者邀请通讯录中的朋友
+                </div>
+            </div>
+                <i id="openPhone" class="open_phone_menu bgc_white layui-icon bgc_white" style="font-size: 2.5rem;">&#xe602;</i>
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script type="text/javascript" src="../../assets/js/group/groupchat.js"></script>
+</html>

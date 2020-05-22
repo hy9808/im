@@ -1,0 +1,23 @@
+
+        <div class="chatBox-content-demo" id="chatBox-content-demo" style="overflow: auto;">
+              {{# layui.each(d,function(index, item){ }}
+            <div class="clearfloat">
+                <div class="author-name">
+                    <small class="chat-date">{{# index%2===0?layui.util.toDateString(item.createTime, 'MM-dd HH:mm'):null}}</small>
+                </div>
+                {{# if(JSON.parse(sessionStorage.getItem("myUserId"))==item.userId){ var myImg = JSON.parse(sessionStorage.getItem("myHeadImg")); }}
+                       <div class="right">
+                       <div class="chat-avatars"><img src="{{myImg}}" alt="头像"/></div>
+                {{# }else{ var youImg = JSON.parse(sessionStorage.getItem("youHeadImg"));  }}
+                       <div class="left">
+                       <div class="chat-avatars"><img src="{{youImg}}" alt="头像"/></div>
+                {{# }; }}
+                   <div class="chat-message">
+                    {{item.message}}
+                   </div>
+                </div>
+            </div>
+               {{#  });  }}
+          </div>
+
+        </div>

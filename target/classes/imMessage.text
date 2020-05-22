@@ -1,0 +1,10 @@
+return {
+  type: type,
+  chatRecord: {
+    id: msgid,
+    userid: userid,
+    friendid: friendid,
+    message: msg,
+  },
+  ext: ext
+};

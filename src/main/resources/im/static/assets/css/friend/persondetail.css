@@ -1,0 +1,122 @@
+* {
+    margin: 0rem;
+    padding: 0rem;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(248,248,248);
+}
+
+.fontSize2rem{
+    font-size: 2rem;
+}
+
+.fontSize1_6rem{
+    font-size: 1.6rem;
+}
+
+.fontSize1_3rem{
+    font-size: 1.3rem;
+}
+
+.fontStrong{
+    font-weight: bold;
+}
+
+.fontFamilyYAHEI{
+    font-family: "Microsoft YaHei UI Light";
+}
+
+.parentsdiv {
+
+}
+
+.header-one{
+    background-color: white;
+    height: 37%;
+    width: 100%;
+    margin: 0rem;
+    padding-top: 0.2rem;
+
+}
+
+.first-line {
+    margin-top: 1.5rem;
+}
+
+.first-line-return {
+    padding-left: 1rem;
+}
+
+.first-line-detail{
+    padding-left: 12rem;
+}
+
+/*第二行*/
+
+.second-line{
+    margin-top: 3rem;
+
+}
+
+.second-line-icon{
+    padding-left: 2rem;
+}
+
+.second-line-right{
+    padding-left: 1.2rem;
+}
+
+.second-right-remarks{
+    padding-top: 0rem;
+}
+
+.second-right-name{
+    padding-top: 0.2rem;
+}
+
+.third-line{
+    margin-top: 3rem;
+}
+
+.fourth-line{
+    margin-top: 1rem;
+}
+
+.Grouping{
+    padding-left: 2rem;
+}
+
+.Grouping-icon{
+    margin-left: 5%;
+    padding-left: 8rem;
+}
+
+.fifth-line{
+    margin-top: 1rem;
+}
+
+middle-operating{
+    background-color: white;
+    margin-top: 5rem;
+
+}
+
+.middle-first{
+    margin-top: 2rem;
+    background-color: white;
+    height: 4.2rem;
+}
+
+.middle-first-icon{
+    margin-top: 1rem;
+    padding-left: 12.3rem;
+}
+
+.middle-first-font{
+    margin-top: 1rem;
+
+    padding-left: 1.7rem;
+}

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<title>friends</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<!--<meta name="referrer" content="no-referrer"/>-->
+		<script type="text/javascript" src="../../assets/js/jquery-3.1.1.min.js"></script>
+
+		<script type="text/javascript" src="../../assets/layui/layui.all.js"></script>
+		<script type="text/javascript" src="../../assets/js-v/config.js"></script>
+		<script src="../../assets/js-vue/vue.js"></script>
+		<script src='../../assets/js/friend/appSort.js'></script>
+		<link href="../../assets/css/friend/base.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="../../assets/css/friend/stylesheet.css">
+		<link rel="stylesheet" href="../../assets/layui/css/layui.css" />
+	</head>
+	<style type="text/css">
+		body {
+			background-color: #dedede
+		}
+		
+		.list li {
+			background-color: #fff;
+			border-bottom: 1px solid #dedede
+		}
+		
+		.list li a {
+			display: block;
+			width: 100%;
+			padding: 10px;
+		}
+		
+		.list>a {
+			padding-left: 10px;
+			margin: 3px 0
+		}
+		
+		.list li img {
+			width: 30px;
+			height: 30px;
+			display: inline-block;
+			margin-right: 10px;
+			vertical-align: middle
+		}
+		
+		a.maven-select {
+			display: block;
+			font-family: "Droid Sans Mono";
+			margin: 2px 0
+		}
+		
+		div.maven-select {
+			position: fixed;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 14px;
+		}
+		
+		span.maven-tip {
+			padding: 20px;
+			position: fixed;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 20px;
+			background-color: #dedede;
+			opacity: .4;
+			border-radius: 8px;
+		}
+		
+		.box {
+			display: none;
+			position: absolute;
+			z-index: 9998;
+			top: 7%;
+			height: 93%;
+			width: 100%;
+			background: white;
+			border-radius: 10px;
+			position: fixed;
+			/* 默认对话框隐藏 */
+		}
+		
+		#sb {
+			display: none;
+			position: absolute;
+			z-index: 9998;
+			top: 95%;
+			height: 5%;
+			width: 100%;
+			background: white;
+			position: fixed;
+			background-color: gainsboro;
+		}
+	</style>
+
+	<body style="background-color: #F8F8F8;">
+
+		<div class="layui-row" style="margin-top: 1.55rem;">
+			<div class="layui-col-xs3">
+				<div class="grid-demo grid-demo-bg1">
+					<div style="padding-left: 1.11rem;font-size: 1.5rem;">通讯录</div>
+				</div>
+			</div>
+			<div class="layui-col-xs6">
+				<div class="grid-demo grid-demo-bg1" id="s">
+					<input type="text" style="padding: 0.27rem 2.0rem;border-radius:1rem;" placeholder="搜索" value="">
+				</div>
+			</div>
+			<div class="layui-col-xs3" id="menu">
+				<div class="grid-demo grid-demo-bg1"><i class="layui-icon" style="padding-left: 60px;font-size: 27px;" @click="menu()">&#xe61f;</i>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-row" style="margin-top: 10px; background-color: white;">
+			<div class="layui-col-xs3" style="padding: 5px 0px;">
+				<div class="grid-demo grid-demo-bg1">
+					<div style="padding-left: 20px;margin-left: -10px;"><img src="../../assets/img/mine/群聊.png" style="width:40px; height:40px" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs6">
+				<div class="grid-demo grid-demo-bg1" style="padding-top: 15px; margin-left: -25px;">群聊</div>
+			</div>
+		</div>
+
+		<div class="layui-row" style=" background-color: white;" id="request">
+			<div class="layui-col-xs3" style="padding: 5px 0px;">
+				<div class="grid-demo grid-demo-bg1">
+					<div style="padding-left: 20px;margin-left: -10px;"><img src="../../assets/img/mine/群聊.png" style="width:40px; height:40px" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs6">
+				<div class="grid-demo grid-demo-bg1" style="padding-top: 15px; margin-left: -25px;">好友请求</div>
+			</div>
+		</div>
+
+		<div class="layui-row" style=" background-color: white;" id="toGroup">
+			<div class="layui-col-xs3" style="padding: 5px 0px;">
+				<div class="grid-demo grid-demo-bg1">
+					<div style="padding-left: 20px;margin-left: -10px;"><img src="../../assets/img/mine/群聊.png" style="width:40px; height:40px" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs6">
+				<div class="grid-demo grid-demo-bg1" style="padding-top: 15px; margin-left: -25px;">
+					好友分组
+				</div>
+			</div>
+		</div>
+
+		<ul class="list" id="list">
+
+		</ul>
+		<div class="layui-col-xs12">
+			<div class="grid-demo grid-demo-bg1" style="padding-top: 15px; margin-left: -15px;"></div>
+		</div>
+
+		<div class="maven-select" id="maven-select"></div>
+		<div id="menuson">
+			<div class="layui-row">
+				<div class="layui-col-md float1">
+					<div class="grid-demo imgmenu"><i class="layui-icon" style="color: white; font-size: 27px;">&#xe66f;</i></div>
+				</div>
+				<div class="layui-col-md9 float1">
+					<div class="grid-demo grid-demo-bg1 fontmenu" id="addFriend">添加朋友</div>
+				</div>
+			</div>
+			<div class="layui-row">
+				<div class="layui-col-md3 float1">
+					<div class="grid-demo imgmenu"><i class="layui-icon" style="color: white; font-size: 27px;">&#xe63b;</i></div>
+				</div>
+				<div class="layui-col-md9 float1">
+					<div class="grid-demo grid-demo-bg1 fontmenu">扫一扫</div>
+				</div>
+			</div>
+		</div>
+		<!--隐藏框-->
+		<div class="box">
+			<div id="app" style="margin-top:20px; ">
+				<div class="layui-row" v-for="list in lists" style="background-color: white;" @click="link(list.userFriendId)">
+					<div class="layui-col-xs3" style="padding: 5px 0px;">
+						<div class="grid-demo grid-demo-bg1">
+							<div style="padding-left: 20px;"><img :src="list.image" style="width:40px; height:40px"></div>
+						</div>
+					</div>
+					<div class="layui-col-xs6">
+						<div class="layui-row">
+							<div class="layui-col-xs6">
+								<div class="grid-demo grid-demo-bg1" style="padding-top: 15px; margin-left: -15px;">{{ list.remarks}} </div>
+							</div>
+							<div class="layui-col-xs6">
+								<div class="grid-demo grid-demo-bg1" style="padding-top: 15px; margin-left: -80px;">({{list.friendName}})</div>
+							</div>
+						</div>
+
+					</div>
+					<hr class="layui-bg-gray">
+				</div>
+				<div class="layui-row" id="sb">
+					<center style="padding-top: 2%; font-size: 1.5rem;">取消</center>
+				</div>
+			</div>
+		</div>
+
+		<i class="layui-icon search">&#xe615;</i>
+		<i class="layui-icon search1">&#x1006;</i>
+		<!-- 加载公共底部 -->
+		<footer class="footer">
+
+		</footer>
+	</body>
+	<style>
+		#menuson {
+			position: absolute;
+			right: 0%;
+			width: 80px;
+			top: 8%;
+			height: 100px;
+			width: 140px;
+			background: #404040;
+			border-radius: 10px;
+		}
+		
+		.imgstyle {
+			width: 34px;
+			height: 31px;
+		}
+		
+		.float1 {
+			float: left;
+		}
+		
+		.fontmenu {
+			font-size: 19px;
+			color: white;
+			padding: 10px 10px;
+		}
+		
+		.imgmenu {
+			margin: 7px 7px;
+		}
+		
+		.search {
+			position: absolute;
+			left: 27%;
+			top: 3%;
+		}
+		
+		.search1 {
+			position: absolute;
+			left: 74%;
+			top: 3%;
+		}
+	</style>
+	<script>
+		/*跳转添加好友页面*/
+
+		$('#addFriend').on('click', function() {
+			window.location.href = "../group/GroupChat.html";
+		})
+		/*跳转分组*/
+
+		$('#toGroup').on('click', function() {
+			window.location.href = "friendGroup.html";
+		})
+		/*好友请求跳转*/
+		$('#request').on('click', function() {
+			window.location.href = "request.html";
+		})
+		/*创建vue对象*/
+		var app = new Vue({
+			el: '#app',
+			data: {
+				lists: {}
+			},
+			methods: {
+				link(e) {
+					console.log("1")
+					/*window.location.href = "/views/friend/persondetail.html?userFriendId=" + e;*/
+				}
+			},
+		})
+		/*清空*/
+		$('.search1').on("click", function() {
+			$('#s input').val("");
+		})
+		/*点击出现展示框*/
+		$('#s').on("click", function() {
+			$(".box").attr("style", "display:block;");
+			$("#sb").attr("style", "display:block;");
+		})
+		/*点击取消消失*/
+		$('#sb').on("click", function() {
+			$(".box").attr("style", "display:none;");
+			$("#sb").attr("style", "display:none;");
+			$('#s input').val("");
+		})
+		/*模糊查询好友  延时查询*/
+		var flag = false;
+		var timer;
+		var now;
+
+		$("#s input").bind("keyup", function() {
+			clearTimeout(timer);
+			flag = true;
+			timer = setTimeout(function() {
+				flag = false;
+				//根据输入的值查询
+				var now = $('#s input').val();
+				if(now != "") {
+					$.ajax({
+						url: httpurl + "/api/search",
+						type: "post",
+						dataType: "json",
+						beforeSend: function(request) {
+							request.setRequestHeader(tokenKey, tokenValue)
+						},
+						data: {
+							name: now
+						},
+						success: function(result) {
+							app.lists = result.result;
+
+						}
+					})
+				} else {
+					app.lists = null;
+				}
+
+			}, 1000);
+		});
+
+		/*读取所有好友*/
+		$(function() {
+			$('#menuson').hide();
+			$('#s input').val("");
+			alert("1");
+			$.ajax({
+				url: httpurl + "/api/searchAll",
+				type: "post",
+				dataType: "json",
+				beforeSend: function(request) {
+					request.setRequestHeader(tokenKey, tokenValue)
+				},
+				success: function(result) {
+					var data = result.result;
+
+						maven_appList.init(data, "list")
+
+
+				}
+			})
+		})
+		var num = 0;
+
+		new Vue({
+			el: '#menu',
+			methods: {
+				menu: function() {
+					num += 1;
+					if(num % 2 != 0) {
+						$('#menuson').show();
+					} else {
+						$('#menuson').hide();
+						num -= 2;
+					}
+				}
+			}
+		})
+
+		function friend(data) {
+			alert(data);
+		}
+	</script>
+
+</html>

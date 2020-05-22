@@ -1,0 +1,53 @@
+<div class="msg-sys" style="margin-top: 3%">
+    <div class="layui-row" style="background: rgba(255, 255, 255, 1);">
+        <div class="layui-col-xs12" style="height: 1.7rem;margin-top: 0.5rem">
+            <img style="margin-left: 2%" src="../../assets/img/message/has-message/zuixinxiaoxi.png" width="25px"
+                 alt=""/>
+            <div style="display:inline;" class="top-msg-name">系统消息</div>
+        </div>
+    </div>
+
+
+    <div class="layui-row">
+        {{# layui.each(d,function(index, item){ }}
+
+        <div class="layui-col-xs12">
+            <div class="message" onclick="clickMsg({{item.id || ''}}, {{item.sysMsgType || 0}}, this)">
+                <div class="layui-row">
+                    <div class="layui-col-xs12 layui-col-md2" style="margin-left: 2%">
+                        {{# if(item.sysMsgType==0){ }}
+
+                        <div class="grid-demo grid-demo-bg1">
+                            <img src="../../assets/img/message/has-message/系统消息_看图王.png" width="10%" alt=""/>
+                               {{# if(item.count>0){}}
+                                     <span class="layui-badge"> {{item.count || ''}}</span>
+                                {{# }; }}
+                        </div>
+                        {{# }else{ }}
+                        <div class="grid-demo grid-demo-bg1">
+                            <img src="../../assets/img/message/has-message/订单消息.png" width="10%" alt=""/>
+                           {{# if(item.count>0){}}
+                            <span class="layui-badge"> {{item.count || ''}}</span>
+                            {{# }; }}
+                        </div>
+                        {{# }; }}
+                    </div>
+                    <div class="layui-col-xs6 layui-col-md10">
+                        <div class="grid-demo grid-demo-bg2">系统消息</div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-md12">
+                        <div class="grid-demo grid-demo-bg2">
+                            {{# if(item.count>0){}}
+                               <span class="sub-message">[{{item.count || ''}}条:]</span>
+                             {{# }; }}
+                                <span class="sub-message">{{item.message || ''}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <span class="time_span">{{layui.util.toDateString(item.createDate, 'MM-dd HH:mm')}}</span>
+        </div>
+        {{# }); }}
+    </div>
+</div>
+

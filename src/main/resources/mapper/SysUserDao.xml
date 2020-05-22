@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yj.im.project.dao.SysUserDao">
+
+    <resultMap type="com.yj.im.project.entity.SysUser" id="SysUserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="OTHER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+<!--    查询用户是否存在   -->
+    <select id="queryExistUserById" resultType="java.lang.Integer">
+        select count(0)
+        from sys_user
+        where id = #{id}
+    </select>
+    <select id="queryChooseUserDetail" resultMap="SysUserMap">
+        select id, account, name 
+        from sys_user
+        where id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+           #{item}
+        </foreach>
+    </select>
+    
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysUserMap">
+        select
+          id, account, name, phone, email, password, image, status, create_time, update_time
+        from yijia.sys_user
+        where id = #{id}
+    </select>
+
+    <!--查询用户-->
+    <select id="queryByAccount" resultType="java.lang.Long">
+        select id from sys_user where phone = #{account} or account = #{account}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysUserMap">
+        select
+          id, account, name, phone, email, password, image, status, create_time, update_time
+        from yijia.sys_user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SysUserMap">
+        select
+        id, account, name, phone, email, password, image, status, create_time, update_time
+        from yijia.sys_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="account != null and account != ''">
+                and account = #{account}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="image != null and image != ''">
+                and image = #{image}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByPhoneList" resultType="com.yj.im.project.entity.pojo.ChatFriendVO"
+            parameterType="java.util.List">
+
+        SELECT
+        su.id userId,
+        su.`name` nickName,
+        su.image,
+        cf.remarks,
+        su.phone
+        FROM
+        sys_user su
+        LEFT JOIN chat_friend cf ON cf.user_id = su.id
+        WHERE cf.status = 1
+        AND su.status = 1
+        AND su.phone IN
+
+        <foreach collection="array" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY su.id
+    </select>
+
+    <select id="selectByUserIdAndPhoneList" resultType="java.lang.Long" parameterType="java.util.Map">
+        SELECT user_friend_id
+        FROM chat_friend
+        WHERE user_id =#{userId}
+        AND user_friend_id
+        IN
+        (
+            SELECT su.id
+            FROM sys_user su
+            INNER JOIN chat_friend cf
+            ON cf.user_id = su.id
+            WHERE cf.status = 1
+            AND su.status = 1
+            AND su.phone in
+            <foreach collection="phones" index="index" item="item"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            GROUP BY id
+        )
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into yijia.sys_user(account, name, phone, email, password, image, status, create_time, update_time)
+        values (#{account}, #{name}, #{phone}, #{email}, #{password}, #{image}, #{status}, #{createTime}, #{updateTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update yijia.sys_user
+        <set>
+            <if test="account != null and account != ''">
+                account = #{account},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="image != null and image != ''">
+                image = #{image},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from yijia.sys_user where id = #{id}
+    </delete>
+
+</mapper>

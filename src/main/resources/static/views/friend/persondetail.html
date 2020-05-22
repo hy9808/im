@@ -1,0 +1,80 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="no-referrer"/>
+    <title>Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/x-icon" href="#"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="../../assets/js/jquery-3.1.1.min.js"></script>
+    <script src="../../assets/js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../../assets/js-v/config.js"></script>
+    <script src="../../assets/js-vue/vue.js"></script>
+    <script src="../../assets/js-vue/vue-router.js"></script>
+    <script type="text/javascript" src="../../assets/layui/layui.all.js"></script>
+    <script type="text/javascript" src="../../assets/layui/layui.js"></script>、
+    <script src="../../assets/js/message/main.js"></script>
+    <script src="../../assets/js/message/sub_mesaage.js"></script>
+    <script src="../../assets/js/websocket/socket_main.js"></script>
+
+
+
+    <!--  自定义的css  -->
+    <link rel="stylesheet" href="../../assets/css/friend/persondetail.css">
+    <!--    layui核心css-->
+    <link rel="stylesheet" href="../../assets/layui/css/layui.css">
+    <link rel="stylesheet" href="../../assets/layui/css/layui.mobile.css">
+    <link rel="stylesheet" href="../../assets/layui/css/modules/laydate/default/laydate.css">
+
+</head>
+<body>
+<div id="app">
+    <div class="header-one layui-row">
+        <div class="first-line layui-row">
+            <div class="first-line-return layui-icon layui-col-xs6" style="font-size: 2rem" href="javascript:;" onclick="javascript:history.go(-1);">
+                &#xe603;
+            </div>
+            <div class="first-line-detail layui-icon layui-col-xs6" style="font-size: 2rem">
+                &#xe65f;
+            </div>
+        </div>
+        <div class="second-line layui-row">
+            <div class="second-line-icon layui-col-xs3">
+                <img :src="vo.image" style="width: 76px;height: 76px"/>
+            </div>
+            <div class="second-line-right layui-col-xs9">
+                <div id="vo-remarks" class="second-right-remarks layui-row fontSize2rem fontStrong fontFamilyYAHEI">{{vo.remarks}}</div>
+                <div id="vo-name" class="second-right-name layui-row fontSize1_3rem fontStrong fontFamilyYAHEI">{{vo.nickName}}</div>
+                <div id="yijia" class="second-right-name layui-row fontSize1_3rem fontFamilyYAHEI" >亿家号：{{vo.account}}</div>
+            </div>
+        </div>
+        <div class="third-line layui-row">
+            <hr class="fengeline layui-bg-gray">
+        </div>
+        <div class="fourth-line layui-row">
+            <div class="Grouping layui-col-xs7 fontFamilyYAHEI fontSize1_6rem">设置备注和分组</div>
+            <div class="Grouping-icon layui-col-xs3 layui-icon " style="font-size: 2rem">
+                &#xe602;
+            </div>
+        </div>
+        <div class="fifth-line layui-row">
+
+        </div>
+    </div>
+    <div class="middle-operating layui-row">
+        <div class="middle-first layui-row">
+            <div class="middle-first-icon layui-icon layui-col-xs5 fontFamilyYAHEI" style = "font-size: 2rem">
+                &#xe63a;
+            </div>
+            <div id="sendMessage" class="middle-first-font layui-col-xs6 fontSize1_6rem">发消息</div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" src="../../assets/js/friend/persondetail.js"></script>
+</html>

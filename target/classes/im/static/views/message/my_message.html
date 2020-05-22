@@ -1,0 +1,122 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="referrer" content="no-referrer"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/x-icon" href="#"/>
+    <!--    layui核心css-->
+    <link rel="stylesheet" href="../../assets/layUi/css/layui.css">
+    <!--    自定义css-->
+    <link rel="stylesheet" href="../../assets/css/message/sub_message.css">
+    <link rel="stylesheet" href="../../assets/css/message/chat.css">
+    <link rel="stylesheet" href="../../assets/css/message/style.css">
+
+
+    <!--    核心JS 和 配置Js-->
+    <script src="../../assets/js/jquery-3.1.1.min.js"></script>
+    <script src="../../assets/layUi/layui.all.js"></script>
+    <script src="../../assets/js-v/config.js"></script>
+
+    <!--    当前页面的js-->
+    <script src="../../assets/js/message/main.js"></script>
+    <script src="../../assets/js/message/sub_mesaage.js"></script>
+    <script src="../../assets/js/websocket/socket_main.js"></script>
+
+</head>
+<body id="main" style="background: #eeeeee;">
+<div id="msgList">
+
+    <!-- 头部 -->
+    <div class="head-div">
+        <br>
+        <br>
+        <p>亿家消息</p>
+    </div>
+
+    <!--   消息体 -->
+    <div id="body-div">
+        <!--            没有消息的窗口 start    -->
+        <div class="not-msg-div">
+            <br/>
+            <br/>
+            <br/>
+            <img src="../../assets/img/message/not-message/图层%201.png" alt="没有消息" width="100%"/>
+            <p>暂无新消息</p>
+        </div>
+        <!--                没有消息的窗口 end-->
+
+        <!--        拥有系统消息  start-->
+        <div id="sys_msg_tmp"></div>
+        <!--        拥有系统消息  end-->
+
+        <!--        好友与群聊消息 start-->
+        <div id="my_message"></div>
+        <!--        好友与群聊消息 end-->
+
+    </div>
+</div>
+
+<div id="sub_main" style="overflow: auto;">
+    <!-- 头部 -->
+    <div class="head-div" style="position: fixed">
+        <img id="remove_sub_message" src="../../assets/img/message/sub_message/＜@2x.png">
+        <br>
+        <br>
+        <p>小团团</p>
+    </div>
+
+    <!--    聊天消息-->
+    <div id="message_context" class="chatBox-content" style="overflow: auto;"></div>
+
+
+    <div class="button_input">
+        <div class="layui-row">
+            <div class="layui-col-xs2">
+                <div class="grid-demo grid-demo-bg1"><img style="margin-left: 14%;margin-top: 9%;"
+                                                          src="../../assets/img/message/sub_message/语音_看图王@2x.png"
+                                                          width="50%"></div>
+            </div>
+            <div class="layui-col-xs8">
+                <div class="grid-demo" style="text-align: center"><input style="margin-left: -5%;margin-top: 2%;"
+                                                                         type="text" class="post_message"></div>
+            </div>
+            <div class="layui-col-xs2">
+                <div class="grid-demo"><img style="margin-left: 30%;margin-top: 9%"
+                                            src="../../assets/img/message/sub_message/加_看图王@2x.png" width="50%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script id="page_template_id" type="text/html">
+    {{# layui.each(d,function(index, item){ }}
+    <div class="clearfloat">
+        <div class="author-name">
+            <small class="chat-date">{{# index%2===0?layui.util.toDateString(item.createTime, 'MM-dd
+                HH:mm'):null}}</small>
+        </div>
+        {{# if(JSON.parse(sessionStorage.getItem("myUserId"))==item.userId){ var myImg =
+        JSON.parse(sessionStorage.getItem("myHeadImg")); }}
+        <div class="right">
+            <div class="chat-avatars"><img src="{{myImg}}" alt="头像"/></div>
+            {{# }else{ var youImg = JSON.parse(sessionStorage.getItem("youHeadImg")); }}
+            <div class="left">
+                <div class="chat-avatars"><img src="{{youImg}}" alt="头像"/></div>
+                {{# }; }}
+                <div class="chat-message">
+                    {{item.message}}
+                </div>
+            </div>
+        </div>
+        {{# }); }}
+    </div>
+
+</script>
+</html>
+
+
+

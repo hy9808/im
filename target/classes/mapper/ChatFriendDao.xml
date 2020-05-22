@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yj.im.project.dao.ChatFriendDao">
+
+    <resultMap type="com.yj.im.project.entity.ChatFriend" id="ChatFriendMap">
+        <result property="friendId" column="friend_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="userFriendId" column="user_friend_id" jdbcType="INTEGER"/>
+        <result property="friendName" column="friend_name" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="friendGroupId" column="friend_group_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <!--    查询该用户是否为接收者的好友-->
+    <select id="isExist" resultType="com.yj.im.project.entity.pojo.ChatFriendVO">
+        SELECT
+            su.account account,
+            su.Name nickName,
+            su.phone phone,
+            su.image image,
+            su.id userId,
+            udm.living_city livingCity,
+            udm.custom_sign customSign,
+            udm.sex sex,
+        (
+            SELECT
+            COUNT(0)
+            FROM sys_user su
+            LEFT JOIN chat_friend cf
+            ON cf.user_id = su.id
+            WHERE id = #{userId}
+            AND cf.user_friend_id = #{id}
+            AND cf.status = 1
+            AND su.status = 1
+        ) flag,
+            (select cf.remarks from chat_friend cf where cf.user_id = #{userId} and cf.user_friend_id = #{id}) remarks
+        FROM sys_user su
+        LEFT JOIN user_dating_message udm ON udm.user_id = su.id
+        WHERE su.id = #{id}
+        AND su.status = 1
+    </select>
+
+    <select id="queryisFriend" resultType="com.yj.im.project.entity.pojo.ChatFriendVO">
+
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ChatFriendMap">
+        select
+          friend_id, user_id, user_friend_id, friend_name, remarks, friend_group_id, create_time, update_time, status
+        from yijia.chat_friend
+        where friend_id = #{friendId}
+    </select>
+    <!--根据用户id查询好友-->
+    <select id="queryAllById" resultMap="ChatFriendMap">
+        select  f.friend_id,f.user_id,f.user_friend_id,f.friend_name,f.remarks,f.status,s.image,s.account
+        from
+        sys_user AS s INNER JOIN chat_friend AS f
+        on s.id = f.user_friend_id
+        and f.user_id =#{userId}
+        and f.status=1
+    </select>
+    <!--根据用户id和分组id查询好友 多表联查-->
+    <select id="queryByIdAndGroupId" resultMap="ChatFriendMap">
+        select
+        f.friend_id,f.user_id,f.user_friend_id,f.friend_name,f.remarks,f.status,f.friend_group_id,s.image
+        from
+        yijia.chat_friend AS f
+        inner join
+        yijia.sys_user AS s
+        on s.id = f.user_friend_id
+        inner join
+        yijia.chat_friend_grouping AS g
+        on g.friend_group_id =f.friend_group_id
+        where
+        f.user_id = #{userId}
+        and g.friend_group_id = #{friendGroupId}
+        and f.status=1 and g.status=1
+    </select>
+
+
+    <!--根据用户id和查询所有分组好友 多表联查-->
+    <select id="queryAllGroupFriend" resultMap="ChatFriendMap">
+        select
+        f.friend_id,f.user_id,f.user_friend_id,f.friend_name,f.remarks,f.status,f.friend_group_id,s.image
+        from
+        yijia.chat_friend AS f
+        inner join
+        yijia.sys_user AS s
+        on s.id = f.user_friend_id
+        inner join
+        yijia.chat_friend_grouping AS g
+        on g.friend_group_id =f.friend_group_id
+        where
+        f.user_id = #{userId}
+        and g.friend_group_id in (select friend_group_id from yijia.chat_friend_grouping where user_id = #{userId} and status =1)
+        and f.status=1 and g.status=1
+    </select>
+    <!--模糊查询好友-->
+    <!--  <select id="queryAllLike" resultMap="ChatFriendMap">
+          select
+          distinct f.*,s.image
+          from yijia.chat_friend AS f,yijia.sys_user AS s
+          where friend_name like CONCAT(CONCAT('%',#{name}),'%') or remarks like CONCAT(CONCAT('%',#{name}),'%') and user_id =#{userId} and f.user_friend_id = s.id
+          and f.status=1
+      </select>-->
+    <select id="queryAllLike" resultMap="ChatFriendMap">
+        select f.friend_id,f.user_id,f.user_friend_id,f.friend_name,f.remarks,f.status,s.image
+        from yijia.chat_friend as f
+        inner join
+        yijia.sys_user AS s
+        on s.id = f.user_friend_id
+        where
+       (friend_name like CONCAT(CONCAT('%',#{name}),'%') or remarks like CONCAT(CONCAT('%',#{name}),'%'))
+        and
+        user_id =#{userId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ChatFriendMap">
+        select
+          friend_id, user_id, user_friend_id, friend_name, remarks, friend_group_id, create_time, update_time, status
+        from yijia.chat_friend
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ChatFriendMap">
+        select
+        friend_id, user_id, user_friend_id, friend_name, remarks, friend_group_id, create_time, update_time, status
+        from yijia.chat_friend
+        <where>
+            <if test="friendId != null">
+                and friend_id = #{friendId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userFriendId != null">
+                and user_friend_id = #{userFriendId}
+            </if>
+            <if test="friendName != null and friendName != ''">
+                and friend_name = #{friendName}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="friendGroupId != null">
+                and friend_group_id = #{friendGroupId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userFriendId" useGeneratedKeys="true">
+        insert into yijia.chat_friend(user_id, user_friend_id, friend_name, remarks, friend_group_id, create_time, update_time, status)
+        values (#{userId}, #{userFriendId}, #{friendName}, #{remarks}, #{friendGroupId}, #{createTime}, #{updateTime}, #{status})
+    </insert>
+
+    <!--    根据自己的id，朋友的id修改对方的备注-->
+    <update id="updateByRemarks">
+        update chat_friend
+        <set>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks}
+            </if>
+        </set>
+        where user_id = #{userId}
+        and user_friend_id = #{id}
+    </update>
+
+    <!--    通过接收者userId和请求者id更新请求者的好友状态和创建时间-->
+    <update id="updateStatusByUserId">
+        update chat_friend
+        <set>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where user_id = #{userId}
+        and user_friend_id = #{userFriendId}
+    </update>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update yijia.chat_friend
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="userFriendId != null">
+                user_friend_id = #{userFriendId},
+            </if>
+            <if test="friendName != null and friendName != ''">
+                friend_name = #{friendName},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+            <if test="friendGroupId != null">
+                friend_group_id = #{friendGroupId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where friend_id = #{friendId}
+    </update>
+    <!--修改用户分组-->
+    <update id="updateGroup">
+        update yijia.chat_friend
+         set friend_group_id = #{friendGroupId},update_time = #{updateTime}
+         where user_id=#{userId} AND user_friend_id=#{userFriendId}
+    </update>
+    <!--删除好友关系-->
+    <update id="updateStatus">
+        update yijia.chat_friend
+        set status = 2,update_time = #{updateTime}
+        where
+         user_id=#{userId} AND user_friend_id=#{userFriendId}
+        OR
+        (user_id=#{userFriendId} and user_friend_id=#{userId})
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from yijia.chat_friend where friend_id = #{friendId}
+    </delete>
+
+</mapper>

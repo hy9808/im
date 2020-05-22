@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="no-referrer"/>
+    <title>Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/x-icon" href="#"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="../../assets/js/jquery-3.1.1.min.js"></script>
+    <script src="../../assets/js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../../assets/js-v/config.js"></script>
+    <script src="../../assets/js-vue/vue.js"></script>
+    <script src="../../assets/js-vue/vue-router.js"></script>
+    <script type="text/javascript" src="../../assets/layui/layui.all.js"></script>
+    <script type="text/javascript" src="../../assets/layui/layui.js"></script>
+
+    <!--  自定义的css  -->
+    <link rel="stylesheet" href="../../assets/css/friend/friendRequest.css">
+    <!--    layui核心css-->
+    <link rel="stylesheet" href="../../assets/layui/css/layui.css">
+    <link rel="stylesheet" href="../../assets/layui/css/layui.mobile.css">
+    <link rel="stylesheet" href="../../assets/layui/css/modules/laydate/default/laydate.css">
+
+</head>
+<body>
+    <div class="all-body">
+        <div class="first-line layui-row">
+            <div class="first-line-return layui-col-xs6 layui-icon" style="font-size: 2rem" href="javascript:;" onclick="javascript:history.go(-1)">
+                &#xe603;
+            </div>
+            <div class="first-line-send layui-col-xs6">
+                <buttom id="send" class="layui-btn layui-btn-normal layui-btn-sm" @click="send()">发送</buttom>
+            </div>
+        </div>
+
+        <div class="second-line layui-row fontFamilyYAHEI fontSize1_6rem fontStrong">
+            申请添加的朋友
+        </div>
+
+        <div class="third-line layui-row fontFamilyYAHEI fontSize1_3rem">
+            发送的朋友申请
+        </div>
+
+        <div class="fourth-line layui-row fontSize1_3rem fontFamilyYAHEI">
+            <textarea rows="2" cols="15"id="wenbenkuang"  class="textCl"></textarea>
+        </div>
+
+        <div class="fifth-line layui-row fontFamilyYAHEI fontSize1_3rem">
+            设置备注
+        </div>
+        <div class="sixth-line layui-row fontFamilyYAHEI fontSize1_3rem">
+            <input id="shurukuang" class="inputCl"/>
+        </div>
+    </div>
+</body>
+<!--  自定义的js  -->
+<script type="text/javascript" src="../../assets/js/friend/friendRequest.js"></script>
+</html>

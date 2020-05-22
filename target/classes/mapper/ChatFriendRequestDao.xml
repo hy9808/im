@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yj.im.project.dao.ChatFriendRequestDao">
+
+    <resultMap type="com.yj.im.project.entity.ChatFriendRequest" id="ChatFriendRequestMap">
+        <result property="friendRequestId" column="friend_request_id" jdbcType="INTEGER"/>
+        <result property="requesterId" column="requester_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="requestContent" column="request_content" jdbcType="VARCHAR"/>
+        <result property="requestStatus" column="request_status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <select id="queryRequestByUserId" resultType="com.yj.im.project.entity.pojo.ChatFriendVO">
+        SELECT
+            su.id userId,
+            su.NAME nickName,
+            su.account account,
+            su.phone phone,
+            su.image image,
+            c.request_status requestStatus
+        FROM
+            sys_user su
+            INNER JOIN chat_friend_request c ON su.id = c.requester_id
+        WHERE
+        su.id IN
+        (
+            SELECT
+                requester_id
+            FROM
+                chat_friend_request
+            WHERE
+            user_id = #{userId}
+        )
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ChatFriendRequestMap">
+        select
+          friend_request_id, requester_id, user_id, request_content, request_status, create_time, update_time, status
+        from yijia.chat_friend_request
+        where friend_request_id = #{friendRequestId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ChatFriendRequestMap">
+        select
+          friend_request_id, requester_id, user_id, request_content, request_status, create_time, update_time, status
+        from yijia.chat_friend_request
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ChatFriendRequestMap">
+        select
+        friend_request_id, requester_id, user_id, request_content, request_status, create_time, update_time, status
+        from yijia.chat_friend_request
+        <where>
+            <if test="friendRequestId != null">
+                and friend_request_id = #{friendRequestId}
+            </if>
+            <if test="requesterId != null">
+                and requester_id = #{requesterId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="requestContent != null and requestContent != ''">
+                and request_content = #{requestContent}
+            </if>
+            <if test="requestStatus != null">
+                and request_status = #{requestStatus}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="friendRequestId" useGeneratedKeys="true">
+        insert into yijia.chat_friend_request(requester_id, user_id, request_content, request_status, create_time, update_time, status)
+        values (#{requesterId}, #{userId}, #{requestContent}, #{requestStatus}, #{createTime}, #{updateTime}, #{status})
+    </insert>
+
+
+    <insert id="insertByUserId" keyProperty="userId" useGeneratedKeys="true">
+        insert into chat_friend_request
+        (
+            requester_id,
+            user_id,
+            request_content,
+            request_status,
+            create_time,
+            update_time,
+            status
+        )
+        value
+        (
+            #{requesterId},#{userId},#{requestContent},#{requestStatus},#{createTime},#{updateTime},#{status}
+        )
+    </insert>
+
+
+    <update id="updateRequestStatusByUserId" parameterType="com.yj.im.project.entity.ChatFriendRequest">
+        update chat_friend_request
+        <set>
+            <if test="requestStatus != null">
+                request_status = #{requestStatus},
+            </if>
+            <if test="updateTime == null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where requester_id = #{requesterId}
+        and user_id = #{userId}
+    </update>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update yijia.chat_friend_request
+        <set>
+            <if test="requesterId != null">
+                requester_id = #{requesterId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="requestContent != null and requestContent != ''">
+                request_content = #{requestContent},
+            </if>
+            <if test="requestStatus != null">
+                request_status = #{requestStatus},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where friend_request_id = #{friendRequestId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from yijia.chat_friend_request where friend_request_id = #{friendRequestId}
+    </delete>
+
+</mapper>

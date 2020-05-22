@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yj.im.project.dao.ChatGroupDao">
+
+    <resultMap type="com.yj.im.project.entity.ChatGroup" id="ChatGroupMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="groupName" column="group_name" jdbcType="VARCHAR"/>
+        <result property="groupCreateUserId" column="group_create_user_id" jdbcType="INTEGER"/>
+        <result property="groupAnnouncement" column="group_announcement" jdbcType="VARCHAR"/>
+        <result property="groupImage" column="group_image" jdbcType="VARCHAR"/>
+        <result property="groupIntroduction" column="group_introduction" jdbcType="VARCHAR"/>
+        <result property="expand" column="expand" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ChatGroupMap">
+        select
+          id, group_name, group_create_user_id, group_announcement, group_image, group_introduction, expand, status, create_time, update_time
+        from yijia.chat_group
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ChatGroupMap">
+        select
+          id, group_name, group_create_user_id, group_announcement, group_image, group_introduction, expand, status, create_time, update_time
+        from yijia.chat_group
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--根据用户id查询所有相关群-->
+    <select id="queryAllGroup" resultMap="ChatGroupMap">
+        SELECT cg.id,cg.group_name,cg.group_image
+        FROM
+        yijia.chat_group AS cg
+        INNER JOIN
+        yijia.chat_user_group AS cug
+        ON cug.group_id = cg.id
+        where cug.user_id =#{userId}
+    </select>
+
+    <!--判断用户是否为群主-->
+    <select id="checkUser" resultMap="ChatGroupMap">
+        select id, group_name, group_create_user_id, group_announcement, group_image
+        from
+        yijia.chat_group
+        where
+        group_create_user_id = #{groupCreateUserId}
+        and id = #{id}
+    </select>
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ChatGroupMap">
+        select
+        id, group_name, group_create_user_id, group_announcement, group_image, group_introduction, expand, status,
+        create_time, update_time
+        from yijia.chat_group
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="groupName != null and groupName != ''">
+                and group_name = #{groupName}
+            </if>
+            <if test="groupCreateUserId != null">
+                and group_create_user_id = #{groupCreateUserId}
+            </if>
+            <if test="groupAnnouncement != null and groupAnnouncement != ''">
+                and group_announcement = #{groupAnnouncement}
+            </if>
+            <if test="groupImage != null and groupImage != ''">
+                and group_image = #{groupImage}
+            </if>
+            <if test="groupIntroduction != null and groupIntroduction != ''">
+                and group_introduction = #{groupIntroduction}
+            </if>
+            <if test="expand != null and expand != ''">
+                and expand = #{expand}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into yijia.chat_group(group_name, group_create_user_id, group_announcement, group_image, group_introduction, expand, status, create_time, update_time)
+        values (#{groupName}, #{groupCreateUserId}, #{groupAnnouncement}, #{groupImage}, #{groupIntroduction}, #{expand}, #{status}, #{createTime}, #{updateTime})
+    </insert>
+
+<!--   新增一个群-->
+    <insert id="insertNewOne" keyProperty="id" useGeneratedKeys="true">
+        insert into yijia.chat_group(group_name, group_create_user_id, group_announcement, group_image, group_introduction, expand, status, create_time, update_time)
+        values (#{groupName}, #{groupCreateUserId}, #{groupAnnouncement}, #{groupImage}, #{groupIntroduction}, #{expand}, #{status}, #{createTime}, #{updateTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update yijia.chat_group
+        <set>
+            <if test="groupName != null and groupName != ''">
+                group_name = #{groupName},
+            </if>
+            <if test="groupCreateUserId != null">
+                group_create_user_id = #{groupCreateUserId},
+            </if>
+            <if test="groupAnnouncement != null and groupAnnouncement != ''">
+                group_announcement = #{groupAnnouncement},
+            </if>
+            <if test="groupImage != null and groupImage != ''">
+                group_image = #{groupImage},
+            </if>
+            <if test="groupIntroduction != null and groupIntroduction != ''">
+                group_introduction = #{groupIntroduction},
+            </if>
+            <if test="expand != null and expand != ''">
+                expand = #{expand},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    
+    <!--修改群名-->
+    <update id="updateGroupName">
+        update yijia.chat_group
+        <set>
+            <if test="groupName != null and groupName != ''">
+                group_name = #{groupName},
+            </if>
+        </set>
+        where  id = #{id}
+    </update>
+    
+    
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from yijia.chat_group where id = #{id}
+    </delete>
+
+</mapper>

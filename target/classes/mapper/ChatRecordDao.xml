@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yj.im.project.dao.ChatRecordDao">
+
+    <resultMap type="com.yj.im.project.entity.ChatRecord" id="ChatRecordMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="recipientId" column="recipient_id" jdbcType="INTEGER"/>
+        <result property="hasRead" column="has_read" jdbcType="INTEGER"/>
+        <result property="hasDelete" column="has_delete" jdbcType="INTEGER"/>
+        <result property="msgType" column="msg_type" jdbcType="INTEGER"/>
+        <result property="message" column="message" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ChatRecordMap">
+        select
+          id, user_id, recipient_id, has_read, has_delete, msg_type, message, status, create_time, update_time
+        from yijia.chat_record
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ChatRecordMap">
+        select
+          id, user_id, recipient_id, has_read, has_delete, msg_type, message, status, create_time, update_time
+        from yijia.chat_record
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ChatRecordMap">
+        select
+        id, user_id, recipient_id, has_read, has_delete, msg_type, message, status, create_time, update_time
+        from yijia.chat_record
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="recipientId != null">
+                and recipient_id = #{recipientId}
+            </if>
+            <if test="hasRead != null">
+                and has_read = #{hasRead}
+            </if>
+            <if test="hasDelete != null">
+                and has_delete = #{hasDelete}
+            </if>
+            <if test="msgType != null">
+                and msg_type = #{msgType}
+            </if>
+            <if test="message != null and message != ''">
+                and message = #{message}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByUserIdAndRId" resultMap="ChatRecordMap">
+        select
+          id, user_id, recipient_id, has_read, has_delete, msg_type, message, status, create_time, update_time
+        from yijia.chat_record
+        WHERE
+            status = 1
+        and has_delete = 0 and
+	        (recipient_id = #{recipientId} AND USER_id = #{userId}) or (recipient_id = #{userId} AND USER_id = #{recipientId})
+        ORDER BY
+	        create_time ASC
+    </select>
+
+    <!--   通过消息列表的id列表 查询有哪些人给我发的消息 我没有读取 这里的userId就是我自己 -->
+    <select id="selectByIdGetNotReadCount" resultType="com.yj.im.project.entity.pojo.ChatRecordMsgListVo">
+
+        SELECT
+        user_id userId,
+        COUNT(0) count,
+        msg_type msgType
+        FROM
+        chat_record
+        WHERE
+        has_read = 1
+        AND user_id IN
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND recipient_id = #{userId}
+        GROUP BY
+        user_id
+    </select>
+
+    <!--   通过消息列表的id列表 查询未读消息的最后近一条消息 跟上面那个是一起用的 这里的userId就是我自己 -->
+    <select id="selectByIdGetNotReadMsg" resultType="com.yj.im.project.entity.pojo.ChatRecordMsgListVo">
+
+        SELECT user_id userId,message FROM
+        (SELECT
+        user_id,
+        message,
+        create_time
+        FROM
+        chat_record
+        WHERE
+        has_read = 1
+        AND user_id IN
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND recipient_id = #{userId} ORDER BY create_time desc) as t GROUP BY user_id
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into yijia.chat_record(user_id, recipient_id, has_read, has_delete, msg_type, message, status, create_time, update_time)
+        values (#{userId}, #{recipientId}, #{hasRead}, #{hasDelete}, #{msgType}, #{message}, #{status}, #{createTime}, #{updateTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update yijia.chat_record
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="recipientId != null">
+                recipient_id = #{recipientId},
+            </if>
+            <if test="hasRead != null">
+                has_read = #{hasRead},
+            </if>
+            <if test="hasDelete != null">
+                has_delete = #{hasDelete},
+            </if>
+            <if test="msgType != null">
+                msg_type = #{msgType},
+            </if>
+            <if test="message != null and message != ''">
+                message = #{message},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateByUserAndRecordId">
+        update yijia.chat_record
+        <set>
+            <if test="hasRead != null">
+                has_read = #{hasRead},
+            </if>
+            <if test="hasDelete != null">
+                has_delete = #{hasDelete},
+            </if>
+            <if test="msgType != null">
+                msg_type = #{msgType},
+            </if>
+            <if test="message != null and message != ''">
+                message = #{message},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where user_id = #{userId} and recipient_id = #{recipientId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from yijia.chat_record where id = #{id}
+    </delete>
+
+</mapper>
